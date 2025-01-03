@@ -1,0 +1,50 @@
+{
+    "subscribes": [
+        {
+            "url": "https://sub.fjiabinc.cn/backend/download/%E5%AE%9D%E5%8F%AF%E6%A2%A6?target=sing-box",
+            "tag": "宝可梦",
+            "enabled": true,
+            "emoji": 0,
+            "subgroup": "宝可梦",
+            "prefix": "",
+            "ex-node-name": "网站|流量|过期|官网|重置|到期",
+            "User-Agent": "v2rayng"
+        },
+        {
+            "url": "https://sub.fjiabinc.cn/backend/download/%E8%87%AA%E5%BB%BA%E8%8A%82%E7%82%B9?target=sing-box",
+            "tag": "自建节点",
+            "enabled": true,
+            "emoji": 0,
+            "subgroup": "自建节点",
+            "prefix": "❤️",
+            "User-Agent": "clashmeta"
+        },
+        {
+            "url": "https://sub.fjiabinc.cn/backend/download/%E6%89%AB%E6%8F%8F%E8%8A%82%E7%82%B9?target=sing-box",
+            "tag": "扫描节点",
+            "enabled": true,
+            "emoji": 0,
+            "subgroup": "扫描节点",
+            "prefix": "",
+            "User-Agent": "clashmeta"
+        },
+        {
+            "url": "https://sub.fjiabinc.cn/backend/download/bbix?target=sing-box",
+            "tag": "bbix",
+            "enabled": true,
+            "emoji": 0,
+            "subgroup": "bbix",
+            "prefix": "",
+            "User-Agent": "clashmeta"
+        }
+    ],
+    "auto_set_outbounds_dns": {
+        "proxy": "",
+        "direct": ""
+    },
+    "save_config_path": "./config.json",
+    "auto_backup": false,
+    "exclude_protocol": "ssr",
+    "config_template": "",
+    "Only-nodes": false
+}
