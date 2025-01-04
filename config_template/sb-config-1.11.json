@@ -310,6 +310,10 @@
         "action": "hijack-dns"
       },
       {
+        "protocol": "ssh",
+        "outbound": "🎯 全球直连"
+      },
+      {
         "clash_mode": "direct",
         "outbound": "🎯 全球直连"
       },
