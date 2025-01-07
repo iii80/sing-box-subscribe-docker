@@ -1,4 +1,5 @@
 import json, os, tool, time, requests, sys, importlib, argparse, yaml, ruamel.yaml
+from typing import Any
 import re
 from datetime import datetime
 from urllib.parse import urlparse
@@ -7,7 +8,7 @@ from api.app import TEMP_DIR
 from parsers.clash2base64 import clash2v2ray
 
 parsers_mod = {}
-providers = None
+providers = {}
 color_code = [31, 32, 33, 34, 35, 36, 91, 92, 93, 94, 95, 96]
 
 
@@ -206,7 +207,7 @@ def parse_content(content):
 
 def get_parser(node):
     proto = tool.get_protocol(node)
-    if providers and providers.get('exclude_protocol'):
+    if providers.get('exclude_protocol'):
         eps = providers['exclude_protocol'].split(',')
         if len(eps) > 0:
             eps = [protocol.strip() for protocol in eps]
@@ -229,8 +230,6 @@ def get_content_from_url(url, n=10):
     if any(url.startswith(prefix) for prefix in prefixes):
         response_text = tool.noblankLine(url)
         return response_text
-    if providers is None or "subscribes" not in providers:
-        return None
     for subscribe in providers["subscribes"]:
         if 'enabled' in subscribe and not subscribe['enabled']:
             continue
@@ -238,22 +237,21 @@ def get_content_from_url(url, n=10):
             UA = subscribe.get('User-Agent', '')
     response = tool.getResponse(url, custom_user_agent=UA)
     concount = 1
-    while concount <= n and  response is None:
+    while concount <= n and not response:
         print('连接出错，正在进行第 ' + str(concount) + ' 次重试，最多重试 ' + str(n) + ' 次...')
         # print('Lỗi kết nối, đang thử lại '+str(concount)+'/'+str(n)+'...')
         response = tool.getResponse(url)
         concount = concount + 1
         time.sleep(1)
-    if response is None:
+    if not response:
         print('获取错误，跳过此订阅')
         # print('Lỗi khi tải link đăng ký, bỏ qua link đăng ký này')
         print('----------------------------')
         pass
-    # 将response断言为非None，以避免后续处理时出现异常
-    assert response is not None
     try:
-        response_content = response.content
-        response_text = response_content.decode('utf-8-sig')  # utf-8-sig 可以忽略 BOM
+        if response is not None:
+            response_content = response.content
+            response_text = response_content.decode('utf-8-sig')  # utf-8-sig 可以忽略 BOM
         #response_encoding = response.encoding
     except:
         return ''
@@ -262,13 +260,12 @@ def get_content_from_url(url, n=10):
         # print('Không nhận được proxy nào từ link đăng ký')
         return None
     if not response_text:
-        response = tool.getResponse(url, custom_user_agent='clashmeta')
-        if response is not None:
-            response_text = response.text
+        response :Any= tool.getResponse(url, custom_user_agent='clashmeta')
+        response_text = response.text
     if any(response_text.startswith(prefix) for prefix in prefixes):
         response_text = tool.noblankLine(response_text)
         return response_text
-    elif 'proxies' in response_text and response is not None:
+    elif 'proxies' in response_text:
         yaml_content = response.content.decode('utf-8')
         response_text_no_tabs = yaml_content.replace('\t', ' ') #fuckU
         yaml = ruamel.yaml.YAML()
@@ -279,9 +276,8 @@ def get_content_from_url(url, n=10):
             pass
     elif 'outbounds' in response_text:
         try:
-            if response is not None:
-                response_text = json.loads(response.text)
-                return response_text
+            response_text = json.loads(response.text)
+            return response_text
         except:
             response_text = re.sub(r'//.*', '', response_text)
             response_text = json.loads(response_text)
@@ -321,7 +317,7 @@ def get_content_form_file(url):
 
 def save_config(path, nodes):
     try:
-        if providers is not None and 'auto_backup' in providers and providers['auto_backup']:
+        if 'auto_backup' in providers and providers['auto_backup']:
             now = datetime.now().strftime('%Y%m%d%H%M%S')
             if os.path.exists(path):
                 os.rename(path, f'{path}.{now}.bak')
@@ -365,9 +361,6 @@ def set_proxy_rule_dns(config):
     #     "address": "tls://1.1.1.1",
     #     "detour": ""
     # }
-    if not providers or "auto_set_outbounds_dns" not in providers:
-        return
-        
     config_rules = config['route']['rules']
     outbound_dns = []
     dns_rules = config['dns']['rules']
@@ -420,11 +413,8 @@ def pro_dns_from_route_rules(route_rule):
     if len(dns_rule_obj) == 0:
         return None
     if route_rule.get('outbound'):
-        if providers and providers.get("auto_set_outbounds_dns") and providers["auto_set_outbounds_dns"].get('direct'):
-            dns_rule_obj['server'] = route_rule['outbound'] + '_dns' if route_rule['outbound'] != 'direct' else \
-                providers["auto_set_outbounds_dns"]['direct']
-        else:
-            dns_rule_obj['server'] = route_rule['outbound'] + '_dns' if route_rule['outbound'] != 'direct' else 'direct'
+        dns_rule_obj['server'] = route_rule['outbound'] + '_dns' if route_rule['outbound'] != 'direct' else \
+            providers["auto_set_outbounds_dns"]['direct']
     return dns_rule_obj
 
 
@@ -435,16 +425,15 @@ def pro_node_template(data_nodes, config_outbound, group):
 
 
 def combin_to_config(config, data):
-    config_outbounds = config.get("outbounds", [])
+    config_outbounds:Any = config["outbounds"] if config.get("outbounds") else None
     i = 0
     for group in data:
         if 'subgroup' in group:
             i += 1
-            if config_outbounds:
-                for out in config_outbounds:
-                    if out.get("outbounds"):
-                        if out['tag'] == 'Proxy' or out['tag'] == '🚀 节点选择':
-                            out["outbounds"] = [out["outbounds"]] if isinstance(out["outbounds"], str) else out["outbounds"]
+            for out in config_outbounds:
+                if out.get("outbounds"):
+                    if out['tag'] == 'Proxy' or out['tag'] == '🚀 节点选择':
+                        out["outbounds"] = [out["outbounds"]] if isinstance(out["outbounds"], str) else out["outbounds"]
                         if '{all}' in out["outbounds"]:
                             index_of_all = out["outbounds"].index('{all}')
                             out["outbounds"][index_of_all] = (group.rsplit("-", 1)[0]).rsplit("-", 1)[-1]
@@ -519,7 +508,7 @@ def combin_to_config(config, data):
     config['outbounds'] = config_outbounds + temp_outbounds
     # 自动配置路由规则到dns规则，避免dns泄露
     dns_tags = [server.get('tag') for server in config['dns']['servers']]
-    asod = providers["auto_set_outbounds_dns"] if providers else None
+    asod = providers.get("auto_set_outbounds_dns")
     if asod and asod.get('proxy') and asod.get('direct') and asod['proxy'] in dns_tags and asod['direct'] in dns_tags:
         set_proxy_rule_dns(config)
     # 提取 wireguard 类型内容
