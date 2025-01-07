@@ -322,18 +322,25 @@
         "outbound": "GLOBAL"
       },
       {
-        "domain": [
-          "clash.razord.top",
-          "yacd.metacubex.one",
-          "yacd.haishan.me",
-          "d.metacubex.one"
+        "rule_set": [
+          "geosite-geolocation-!cn",
+          "geosite-proxy-domain"
         ],
-        "outbound": "🎯 全球直连"
+        "outbound": "🚀 节点选择"
       },
       {
         "rule_set": [
           "geosite-private",
           "geosite-direct-domain"
+        ],
+        "outbound": "🎯 全球直连"
+      },
+      {
+        "domain": [
+          "clash.razord.top",
+          "yacd.metacubex.one",
+          "yacd.haishan.me",
+          "d.metacubex.one"
         ],
         "outbound": "🎯 全球直连"
       },
@@ -388,13 +395,6 @@
       {
         "rule_set": "geosite-microsoft",
         "outbound": "🪟 Microsoft"
-      },
-      {
-        "rule_set": [
-          "geosite-geolocation-!cn",
-          "geosite-proxy-domain"
-        ],
-        "outbound": "🚀 节点选择"
       },
       {
         "rule_set": [

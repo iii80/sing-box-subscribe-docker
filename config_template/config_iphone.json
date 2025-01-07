@@ -342,6 +342,13 @@
                 "outbound": "GLOBAL"
             },
             {
+                "rule_set": [
+                    "geosite-geolocation-!cn",
+                    "geosite-proxy-domain"
+                ],
+                "outbound": "🚀 节点选择"
+            },
+            {
                 "domain": [
                     "clash.razord.top",
                     "yacd.metacubex.one",
@@ -409,13 +416,6 @@
                     "geosite-telegram"
                 ],
                 "outbound": "📲 Telegram"
-            },
-            {
-                "rule_set": [
-                    "geosite-geolocation-!cn",
-                    "geosite-proxy-domain"
-                ],
-                "outbound": "🚀 节点选择"
             },
             {
                 "rule_set": [
