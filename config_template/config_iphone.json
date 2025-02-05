@@ -34,11 +34,6 @@
         ],
         "rules": [
             {
-                "outbound": "any",
-                "server": "defaultDns",
-                "disable_cache": true
-            },
-            {
                 "clash_mode": "direct",
                 "server": "localDns"
             },
@@ -51,11 +46,22 @@
                 "server": "localDns"
             },
             {
+                "domain_suffix": [
+                    "cerebras.ai"
+                ],
+                "server": "proxyDns"
+            },
+            {
                 "rule_set": [
                     "geosite-geolocation-!cn",
                     "geosite-proxy-domain"
                 ],
                 "server": "proxyDns"
+            },
+            {
+                "outbound": "any",
+                "server": "defaultDns",
+                "disable_cache": true
             }
         ],
         "final": "localDns",
