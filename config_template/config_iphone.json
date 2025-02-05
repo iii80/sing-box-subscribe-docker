@@ -306,10 +306,6 @@
         {
             "tag": "🎯 全球直连",
             "type": "direct"
-        },
-        {
-            "tag": "dns-out",
-            "type": "dns"
         }
     ],
     "route": {
@@ -327,7 +323,17 @@
                         "protocol": "dns"
                     }
                 ],
-                "outbound": "dns-out"
+                "action": "hijack-dns"
+            },
+            {
+                "inbound": "in",
+                "action": "resolve",
+                "strategy": "prefer_ipv4"
+            },
+            {
+                "inbound": "in",
+                "timeout": "1s",
+                "action": "sniff"
             },
             {
                 "protocol": "ssh",
