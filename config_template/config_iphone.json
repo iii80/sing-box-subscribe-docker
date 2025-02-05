@@ -46,6 +46,12 @@
                 "server": "localDns"
             },
             {
+                "domain_suffix": [
+                    "cerebras.ai"
+                ],
+                "server": "proxyDns"
+            },
+            {
                 "rule_set": [
                     "geosite-geolocation-!cn",
                     "geosite-proxy-domain"
