@@ -83,7 +83,16 @@
             "auto_redirect": false,
             "auto_redirect_input_mark": "0x2023",
             "auto_redirect_output_mark": "0x2024",
-            "strict_route": true
+            "strict_route": true,
+            "platform": {
+                "http_proxy": {
+                    "enabled": true,
+                    "server": "127.0.0.1",
+                    "server_port": 6152,
+                    "bypass_domain": [],
+                    "match_domain": []
+                }
+            }
         }
     ],
     "outbounds": [
