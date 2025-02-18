@@ -27,15 +27,6 @@
             "subgroup": "扫描节点",
             "prefix": "",
             "User-Agent": "clashmeta"
-        },
-        {
-            "url": "https://sub.fjiabinc.cn/backend/download/bbix?target=sing-box",
-            "tag": "bbix",
-            "enabled": true,
-            "emoji": 0,
-            "subgroup": "bbix",
-            "prefix": "",
-            "User-Agent": "clashmeta"
         }
     ],
     "auto_set_outbounds_dns": {
